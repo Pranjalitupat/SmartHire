@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>SmartHire - Upload Resume</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+<nav class="navbar navbar-dark bg-primary">
+    <div class="container">
+        <a class="navbar-brand" href="/dashboard">🎯 SmartHire</a>
+        <a href="/logout" class="btn btn-outline-light btn-sm">Logout</a>
+    </div>
+</nav>
+
+<div class="container mt-5">
+    <h3>📄 Upload Your Resume</h3>
+    <p class="text-muted">Upload PDF or DOCX file</p>
+
+    <!-- Success Message -->
+    <div th:if="${success}" class="alert alert-success">
+        <h5>✅ Resume Uploaded Successfully!</h5>
+        <p><strong>Skills Found:</strong>
+            <span th:text="${skills}"></span>
+        </p>
+        <p><strong>Email Found:</strong>
+            <span th:text="${emailFound}"></span>
+        </p>
+        <p><strong>Phone Found:</strong>
+            <span th:text="${phone}"></span>
+        </p>
+        <a href="/match" class="btn btn-primary mt-2">
+            View Job Matches →
+        </a>
+    </div>
+
+    <!-- Error Message -->
+    <div th:if="${error}" class="alert alert-danger"
+         th:text="${error}">
+    </div>
+
+    <!-- Upload Form -->
+    <div class="card shadow mt-3">
+        <div class="card-body p-4">
+            <form th:action="@{/upload}" 
+                  method="post" 
+                  enctype="multipart/form-data">
+
+                <div class="mb-3">
+                    <label class="form-label">
+                        Select Resume (PDF or DOCX)
+                    </label>
+                    <input type="file" 
+                           name="file" 
+                           class="form-control"
+                           accept=".pdf,.docx" 
+                           required>
+                </div>
+
+                <button type="submit" 
+                        class="btn btn-primary">
+                    Upload & Analyze Resume
+                </button>
+
+            </form>
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>

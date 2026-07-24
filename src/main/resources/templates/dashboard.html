@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>SmartHire - Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+<nav class="navbar navbar-dark bg-primary">
+    <div class="container">
+        <a class="navbar-brand fw-bold">🎯 SmartHire</a>
+        <div>
+            <span class="text-white me-3"
+                  th:text="'👋 ' + ${user.fullName}">
+            </span>
+            <a href="/logout" class="btn btn-outline-light btn-sm">Logout</a>
+        </div>
+    </div>
+</nav>
+
+<div class="container mt-4">
+
+    <!-- Welcome Banner -->
+    <div class="card bg-primary text-white shadow mb-4">
+        <div class="card-body p-4">
+            <h3 th:text="'Welcome back, ' + ${user.fullName} + '! 👋'"></h3>
+            <p class="mb-0">Your smart career companion — SmartHire</p>
+        </div>
+    </div>
+
+    <!-- Stats Row -->
+    <div class="row mb-4">
+
+        <!-- Resume Status -->
+        <div class="col-md-3">
+            <div class="card shadow-sm text-center p-3">
+                <div style="font-size: 2rem;">📄</div>
+                <h6 class="text-muted">Resume</h6>
+                <span th:if="${resume}"
+                      class="badge bg-success fs-6">Uploaded ✅</span>
+                <span th:unless="${resume}"
+                      class="badge bg-danger fs-6">Not Uploaded ❌</span>
+            </div>
+        </div>
+
+        <!-- Skills Count -->
+        <div class="col-md-3">
+            <div class="card shadow-sm text-center p-3">
+                <div style="font-size: 2rem;">💡</div>
+                <h6 class="text-muted">Skills Found</h6>
+                <span class="fw-bold fs-4 text-primary"
+                      th:text="${skillCount != null ? skillCount : 0}">
+                </span>
+            </div>
+        </div>
+
+        <!-- Top Match -->
+        <div class="col-md-3">
+            <div class="card shadow-sm text-center p-3">
+                <div style="font-size: 2rem;">🎯</div>
+                <h6 class="text-muted">Top Match</h6>
+                <span class="fw-bold text-success"
+                      th:text="${topMatch != null ?
+                      topMatch.matchScore + '%' : 'N/A'}">
+                </span>
+            </div>
+        </div>
+
+        <!-- Total Jobs -->
+        <div class="col-md-3">
+            <div class="card shadow-sm text-center p-3">
+                <div style="font-size: 2rem;">💼</div>
+                <h6 class="text-muted">Job Matches</h6>
+                <span class="fw-bold fs-4 text-primary"
+                      th:text="${totalMatches != null ? totalMatches : 0}">
+                </span>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Top Match Card -->
+    <div th:if="${topMatch}" class="card shadow-sm mb-4 border-success">
+        <div class="card-header bg-success text-white">
+            🏆 Your Best Job Match
+        </div>
+        <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h5 th:text="${topMatch.job.jobTitle}"></h5>
+                    <span class="text-muted"
+                          th:text="'Experience: ' + ${topMatch.job.experienceLevel}">
+                    </span>
+                    <br/>
+                    <span class="text-success fw-bold"
+                          th:text="${topMatch.matchLabel}">
+                    </span>
+                </div>
+                <div class="text-center">
+                    <div class="text-success fw-bold"
+                         style="font-size: 2.5rem;"
+                         th:text="${topMatch.matchScore} + '%'">
+                    </div>
+                </div>
+            </div>
+            <hr/>
+            <a th:href="@{/skillgap/{id}(id=${topMatch.job.id})}"
+               class="btn btn-success me-2">
+                📊 View Skill Gap
+            </a>
+            <a href="/match" class="btn btn-outline-primary">
+                💼 All Job Matches
+            </a>
+            <a href="/report/download" class="btn btn-danger ms-2">
+   				 📥 Download PDF Report
+			</a>
+        </div>
+    </div>
+
+    <!-- No Resume Warning -->
+    <div th:unless="${resume}" class="alert alert-warning">
+        ⚠️ You haven't uploaded your resume yet!
+        <a href="/upload" class="btn btn-warning btn-sm ms-2">
+            Upload Now
+        </a>
+    </div>
+
+    <!-- Action Cards -->
+    <div class="row mt-2">
+        <div class="col-md-4">
+            <div class="card shadow-sm text-center p-3">
+                <div style="font-size: 2rem;">📄</div>
+                <h5>Upload Resume</h5>
+                <p class="text-muted small">Upload PDF or DOCX resume</p>
+                <a href="/upload" class="btn btn-primary btn-sm">
+                    Upload Now
+                </a>
+            </div>
+        </div>
+        <div class="col-md-4 mt-3">
+    		<div class="card shadow-sm text-center p-3">
+        		<div style="font-size: 2rem;">📋</div>
+       		 	<h5>My Applications</h5>
+        		<p class="text-muted small">Track your job applications</p>
+        		<a href="/my-applications" class="btn btn-info btn-sm">
+           		 View Applications
+       		 	</a>
+   			 </div>
+		</div>
+        <div class="col-md-4">
+            <div class="card shadow-sm text-center p-3">
+                <div style="font-size: 2rem;">💼</div>
+                <h5>Job Matches</h5>
+                <p class="text-muted small">See matching jobs for your skills</p>
+                <a href="/match" class="btn btn-success btn-sm">
+                    View Matches
+                </a>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow-sm text-center p-3">
+                <div style="font-size: 2rem;">📊</div>
+                <h5>Skill Gap</h5>
+                <p class="text-muted small">Know what skills to learn next</p>
+                <a href="/match" class="btn btn-warning btn-sm">
+                    Analyze Gap
+                </a>
+            </div>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>

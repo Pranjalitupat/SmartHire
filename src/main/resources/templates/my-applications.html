@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>SmartHire - My Applications</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+<nav class="navbar navbar-dark bg-primary">
+    <div class="container">
+        <a class="navbar-brand" href="/dashboard">🎯 SmartHire</a>
+        <a href="/logout"
+           class="btn btn-outline-light btn-sm">Logout</a>
+    </div>
+</nav>
+
+<div class="container mt-4">
+    <h3>📋 My Job Applications</h3>
+    <p class="text-muted">Track your application status</p>
+
+    <div th:if="${applications.empty}"
+         class="alert alert-info">
+        You haven't applied for any jobs yet.
+        <a href="/match">Browse Jobs</a>
+    </div>
+
+    <div th:unless="${applications.empty}"
+         class="card shadow-sm">
+        <div class="card-body">
+            <table class="table table-hover">
+                <thead class="table-primary">
+                    <tr>
+                        <th>#</th>
+                        <th>Job Title</th>
+                        <th>Match Score</th>
+                        <th>Applied On</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="app, i : ${applications}">
+                        <td th:text="${i.index + 1}"></td>
+                        <td class="fw-bold"
+                            th:text="${app.job.jobTitle}">
+                        </td>
+                        <td>
+                            <span th:classappend="
+                                ${app.matchScore >= 80} ?
+                                'bg-success' :
+                                (${app.matchScore >= 60} ?
+                                'bg-warning' : 'bg-danger')"
+                                  class="badge"
+                                  th:text="${app.matchScore} + '%'">
+                            </span>
+                        </td>
+                        <td>
+                            <small th:text="${#temporals.format(
+                                app.appliedAt,
+                                'dd MMM yyyy')}">
+                            </small>
+                        </td>
+                        <td>
+                            <span th:classappend="
+                                ${app.status.name() == 'SHORTLISTED'} ?
+                                'bg-success' :
+                                (${app.status.name() == 'SELECTED'} ?
+                                'bg-primary' :
+                                (${app.status.name() == 'REJECTED'} ?
+                                'bg-danger' : 'bg-secondary'))"
+                                  class="badge fs-6"
+                                  th:text="${app.status}">
+                            </span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <a href="/dashboard"
+       class="btn btn-outline-secondary mt-3">
+       🏠 Dashboard
+    </a>
+    <a href="/match"
+       class="btn btn-outline-primary mt-3 ms-2">
+       💼 Browse More Jobs
+    </a>
+</div>
+</body>
+</html>

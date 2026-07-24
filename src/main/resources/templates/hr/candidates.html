@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>SmartHire - Candidates</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+<nav class="navbar navbar-dark bg-dark">
+    <div class="container">
+        <a class="navbar-brand" href="/hr/dashboard">
+            🎯 SmartHire — HR Panel
+        </a>
+        <a href="/logout"
+           class="btn btn-outline-light btn-sm">Logout</a>
+    </div>
+</nav>
+
+<div class="container mt-4">
+
+    <h3>👥 Candidates for
+        <span th:text="${job.jobTitle}"
+              class="text-primary"></span>
+    </h3>
+    <p class="text-muted">Ranked by match score — highest first</p>
+
+    <!-- Updated message -->
+    <div th:if="${param.updated}"
+         class="alert alert-success">
+        Status updated successfully!
+    </div>
+
+    <!-- No candidates -->
+    <div th:if="${applications.empty}"
+         class="alert alert-warning">
+        No candidates have applied for this job yet.
+    </div>
+
+    <!-- Candidates Table -->
+    <div th:unless="${applications.empty}"
+         class="card shadow-sm">
+        <div class="card-body">
+            <table class="table table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Rank</th>
+                        <th>Candidate</th>
+                        <th>Email</th>
+                        <th>Match Score</th>
+                        <th>Skills</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="app, i : ${applications}">
+                        <td>
+                            <span th:text="${i.index + 1}"
+                                  class="fw-bold">
+                            </span>
+                            <span th:if="${i.index == 0}">🥇</span>
+                            <span th:if="${i.index == 1}">🥈</span>
+                            <span th:if="${i.index == 2}">🥉</span>
+                        </td>
+                        <td class="fw-bold"
+                            th:text="${app.user.fullName}">
+                        </td>
+                        <td th:text="${app.user.email}"></td>
+                        <td>
+                            <span th:classappend="
+                                ${app.matchScore >= 80} ? 
+                                'bg-success' : 
+                                (${app.matchScore >= 60} ? 
+                                'bg-warning' : 'bg-danger')"
+                                  class="badge fs-6"
+                                  th:text="${app.matchScore} + '%'">
+                            </span>
+                        </td>
+                        <td>
+                            <small class="text-muted"
+                                   th:text="${app.resume
+                                   .extractedSkills}">
+                            </small>
+                        </td>
+                        <td>
+                            <span th:classappend="
+                                ${app.status.name() == 'SHORTLISTED'} ?
+                                'bg-success' :
+                                (${app.status.name() == 'SELECTED'} ?
+                                'bg-primary' :
+                                (${app.status.name() == 'REJECTED'} ?
+                                'bg-danger' : 'bg-secondary'))"
+                                  class="badge"
+                                  th:text="${app.status}">
+                            </span>
+                        </td>
+                        <td>
+                            <form th:action="@{/hr/update-status}"
+                                  method="post"
+                                  class="d-flex gap-1">
+                                <input type="hidden"
+                                       name="applicationId"
+                                       th:value="${app.id}">
+                                <select name="status"
+                                        class="form-select form-select-sm"
+                                        style="width:120px">
+                                    <option value="APPLIED">Applied</option>
+                                    <option value="SHORTLISTED">
+                                        Shortlist
+                                    </option>
+                                    <option value="SELECTED">
+                                        Select
+                                    </option>
+                                    <option value="REJECTED">
+                                        Reject
+                                    </option>
+                                </select>
+                                <button type="submit"
+                                        class="btn btn-sm btn-primary">
+                                    ✓
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <a href="/hr/dashboard"
+       class="btn btn-outline-secondary mt-3">
+       ← Back to Dashboard
+    </a>
+
+</div>
+</body>
+</html>
